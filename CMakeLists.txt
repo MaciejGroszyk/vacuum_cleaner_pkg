@@ -20,6 +20,7 @@ find_package(ament_cmake REQUIRED)
 find_package(rclcpp REQUIRED)
 find_package(sensor_msgs REQUIRED)
 find_package(geometry_msgs REQUIRED)
+find_package(nav_msgs REQUIRED)
 find_package(std_msgs REQUIRED)
 find_package(rosidl_default_generators REQUIRED)
 find_package(vacuum_cleaner_pkg REQUIRED)
@@ -37,7 +38,7 @@ rosidl_generate_interfaces(${PROJECT_NAME}
 
 
 add_executable(vacuum_cleaner_node src/vacuum_cleaner_node.cpp)
-ament_target_dependencies(vacuum_cleaner_node rclcpp geometry_msgs std_msgs)
+ament_target_dependencies(vacuum_cleaner_node rclcpp geometry_msgs nav_msgs std_msgs vacuum_cleaner_pkg)
 
 add_executable(bumper_sim src/bumper_sim.cpp)
 ament_target_dependencies(bumper_sim rclcpp sensor_msgs vacuum_cleaner_pkg)

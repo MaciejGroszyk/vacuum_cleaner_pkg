@@ -55,10 +55,10 @@ class BumperSensor : public rclcpp::Node
     const float COLLISION_DISTANCE = 0.35;
 };
 
-int main(int argc, char * argv[])
-{
-  rclcpp::init(argc, argv);
-  rclcpp::spin(std::make_shared<BumperSensor>());
-  rclcpp::shutdown();
-  return 0;
-}
+// int main(int argc, char * argv[])
+// {
+//   rclcpp::init(argc, argv);
+//   rclcpp::spin(std::make_shared<BumperSensor>());
+//   rclcpp::shutdown();
+//   return 0;
+// }

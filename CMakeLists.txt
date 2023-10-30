@@ -22,6 +22,7 @@ find_package(sensor_msgs REQUIRED)
 find_package(geometry_msgs REQUIRED)
 find_package(nav_msgs REQUIRED)
 find_package(std_msgs REQUIRED)
+find_package(tf2 REQUIRED)
 find_package(rosidl_default_generators REQUIRED)
 find_package(vacuum_cleaner_pkg REQUIRED)
 
@@ -38,20 +39,20 @@ rosidl_generate_interfaces(${PROJECT_NAME}
 
 
 add_executable(vacuum_cleaner_node src/vacuum_cleaner_node.cpp)
-ament_target_dependencies(vacuum_cleaner_node rclcpp geometry_msgs nav_msgs std_msgs vacuum_cleaner_pkg)
+ament_target_dependencies(vacuum_cleaner_node rclcpp sensor_msgs geometry_msgs nav_msgs std_msgs tf2 vacuum_cleaner_pkg)
 
-add_executable(bumper_sim src/bumper_sim.cpp)
-ament_target_dependencies(bumper_sim rclcpp sensor_msgs vacuum_cleaner_pkg)
+# add_executable(bumper_sim src/bumper_sim.cpp)
+# ament_target_dependencies(bumper_sim rclcpp sensor_msgs vacuum_cleaner_pkg)
 
 target_include_directories(
   vacuum_cleaner_node PUBLIC
-  bumper_sim PUBLIC
+  # bumper_sim PUBLIC
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
   $<INSTALL_INTERFACE:include>)
 
 install(TARGETS 
   vacuum_cleaner_node 
-  bumper_sim
+  # bumper_sim
   DESTINATION lib/${PROJECT_NAME})
 
 if(BUILD_TESTING)

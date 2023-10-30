@@ -13,14 +13,16 @@
 #include "rclcpp/rclcpp.hpp"
 #include "std_msgs/msg/string.hpp"
 #include "nav_msgs/msg/odometry.hpp"
+#include "vacuum_cleaner_pkg/msg/bumper.hpp"
+
 
 
 using std::placeholders::_1;
 
-class TurtleBotNode : public rclcpp::Node
+class TurtleBotControl : public rclcpp::Node
 {
 public:
-  TurtleBotNode()
+  TurtleBotControl()
   : Node("turtlebot3_main_cpp")
   {
     cmd_vel_publisher_ = this->create_publisher<geometry_msgs::msg::Twist>(
@@ -28,14 +30,67 @@ public:
       rclcpp::ServicesQoS());
 
     odom_subscription_ = this->create_subscription<nav_msgs::msg::Odometry>(
-      "/odom", 30, std::bind(&TurtleBotNode::odomCallback, this, _1));
+      "/odom", 20, std::bind(&TurtleBotControl::odomCallback, this, _1));
 
-    timer_ = this->create_wall_timer(std::chrono::milliseconds(500), std::bind(&TurtleBotNode::publish_cmd_vel_function1, this));
+    bumper_subscription_ = this->create_subscription<vacuum_cleaner_pkg::msg::Bumper>(
+      "/bumper_sensor", 20, std::bind(&TurtleBotControl::bumperCallback, this, _1));
 
-    angle_goal_val =  get_random_value_from_range(-3.14, 3.14);
-    RCLCPP_INFO(this->get_logger(), "Publishing random float: '%f'", angle_goal_val);
+    timer_main = this->create_wall_timer(std::chrono::milliseconds(20), std::bind(&TurtleBotControl::main, this));
+
   } 
 
+
+  void main()
+  {
+    random_walk();
+  }
+
+  void random_walk()
+  {
+    if (act_val_bumper && (!collison_handling))
+    {
+      generate_new_angle_goal();
+      collison_handling = true;
+    }
+    else if (collison_handling)
+    {
+      collison_handling = collisionHandle();
+    }
+    else if ((!act_val_bumper) && (!collison_handling))
+    {
+      publish_cmd_vel_function(1.0, 0.0, 0.0);
+    }   
+  }
+
+
+  void generate_new_angle_goal()
+  {
+    // TO DO act yaw not in range
+    angle_goal_val =  get_random_value_from_range(-3.14, 3.14);
+    RCLCPP_INFO(this->get_logger(), "Publishing random float: '%f'", angle_goal_val);
+  }
+
+  bool collisionHandle()
+  {
+    float z_vel = (angle_goal_val - act_val_yaw) * K_ANGULAR;
+    if (z_vel < 0.1)
+    {
+      publish_cmd_vel_function(0.0, 0.0, 0.0);
+      return false;
+    }
+    else
+    {
+      publish_cmd_vel_function(0.0, 0.0, z_vel);
+      return true;
+    }
+  }
+
+
+  void bumperCallback(const vacuum_cleaner_pkg::msg::Bumper::SharedPtr msg)
+  {
+    act_val_bumper = msg -> collision_detected;
+    RCLCPP_INFO(this->get_logger(), "act_val_bumper: '%s'", act_val_bumper ? "true" : "false");
+  }
 
   void odomCallback(const nav_msgs::msg::Odometry::SharedPtr msg)
   {
@@ -47,18 +102,9 @@ public:
     tf2::Matrix3x3 m(q);
     double roll, pitch, yaw;
     m.getRPY(roll, pitch, yaw);
-    //RCLCPP_INFO(this->get_logger(), "Publishing yaw: '%f'", yaw);
-
-    yaw_val = yaw;
-    
+    act_val_yaw = yaw;
   }
 
-  void publish_cmd_vel_function1()
-  {
-    const float K_ANGULAR = 2;
-    const float z_vel = (angle_goal_val - yaw_val) * K_ANGULAR;
-    publish_cmd_vel_function(0.0, 0.0, z_vel);
-  }
   void publish_cmd_vel_function(const float x_val, const float y_val, const float z_val)
   {
       auto twist_msg = geometry_msgs::msg::Twist();
@@ -67,18 +113,21 @@ public:
       twist_msg.linear.y = y_val;
       twist_msg.angular.z = z_val;
       cmd_vel_publisher_->publish(twist_msg);
-
       //RCLCPP_INFO(this->get_logger(), "Cmd vel published");
   }
 
   rclcpp::Publisher<geometry_msgs::msg::Twist>::SharedPtr cmd_vel_publisher_;
   rclcpp::Subscription<nav_msgs::msg::Odometry>::SharedPtr odom_subscription_;
-
+  rclcpp::Subscription<vacuum_cleaner_pkg::msg::Bumper>::SharedPtr bumper_subscription_;
+  rclcpp::TimerBase::SharedPtr timer_main;
 
   float angle_goal_val;
-  float yaw_val;
+  float act_val_yaw;
+  bool act_val_bumper;
+  bool collison_handling;
+  const float K_ANGULAR = 1.5;
 
-  rclcpp::TimerBase::SharedPtr timer_;
+
 
 private:
 
@@ -88,15 +137,16 @@ private:
     std::mt19937 mt(rd());
     std::uniform_real_distribution<float> dist(min_value, max_value);
     return dist(mt);
+    return 1.0;
   }
 
 };
 
 
-int main(int argc, char * argv[])
-{
-  rclcpp::init(argc, argv);
-  rclcpp::spin(std::make_shared<TurtleBotNode>());
-  rclcpp::shutdown();
-  return 0;
-}
+// int main(int argc, char * argv[])
+// {
+//   rclcpp::init(argc, argv);
+//   rclcpp::spin(std::make_shared<TurtleBotNode>());
+//   rclcpp::shutdown();
+//   return 0;
+// }

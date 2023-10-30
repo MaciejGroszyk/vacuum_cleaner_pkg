@@ -5,6 +5,7 @@
 #include <memory>
 #include <string>
 #include <random>
+#include <cmath>
 
 #include "tf2/LinearMath/Quaternion.h"
 #include "tf2/LinearMath/Matrix3x3.h"
@@ -35,19 +36,49 @@ public:
     bumper_subscription_ = this->create_subscription<vacuum_cleaner_pkg::msg::Bumper>(
       "/bumper_sensor", 20, std::bind(&TurtleBotControl::bumperCallback, this, _1));
 
-    timer_main = this->create_wall_timer(std::chrono::milliseconds(20), std::bind(&TurtleBotControl::main, this));
+    timer_main = this->create_wall_timer(std::chrono::milliseconds(10), std::bind(&TurtleBotControl::main, this));
+
+    collison_handling = false;
 
   } 
 
 
   void main()
   {
-    random_walk();
+    spiral_walk();
+    //random_walk();
+  }
+
+
+  void spiral_walk()
+  {
+    const int angle_num = get_act_quarter_num();
+    RCLCPP_INFO(this->get_logger(), "Publishing quarter num: '%i'",angle_num);
+    RCLCPP_INFO(this->get_logger(), "Publishing random float: '%s'", is_all_quarters_visited() ? "true" : "false");
+    quarters_visited[angle_num] = true;
+
+    if (is_all_quarters_visited())
+    {
+      spiral_num += 1.0;
+      quarters_visited[0] = false;
+      quarters_visited[1] = false;
+      quarters_visited[2] = false;
+      quarters_visited[3] = false;
+    }
+
+    const float z_vel = 0.5 - DECREMENT_YAW_VEL_BY * spiral_num;
+
+    publish_cmd_vel_function(0.35, 0.0, z_vel);
+  }
+
+  bool is_all_quarters_visited() const
+  {
+    return std::all_of(quarters_visited.begin(), quarters_visited.end(), [](bool v) { return v; });
   }
 
   void random_walk()
   {
-    if (act_val_bumper && (!collison_handling))
+    if (act_val_bumper && (not collison_handling))
     {
       generate_new_angle_goal();
       collison_handling = true;
@@ -56,9 +87,10 @@ public:
     {
       collison_handling = collisionHandle();
     }
-    else if ((!act_val_bumper) && (!collison_handling))
+    else if ((not act_val_bumper) && (not collison_handling))
     {
-      publish_cmd_vel_function(1.0, 0.0, 0.0);
+      RCLCPP_INFO(this->get_logger(), "Publishing cmd vel");
+      publish_cmd_vel_function(0.35, 0.0, 0.0);
     }   
   }
 
@@ -73,7 +105,8 @@ public:
   bool collisionHandle()
   {
     float z_vel = (angle_goal_val - act_val_yaw) * K_ANGULAR;
-    if (z_vel < 0.1)
+    RCLCPP_INFO(this->get_logger(), "Publishing z_vel: '%f'", z_vel);
+    if (abs(z_vel) < 0.3)
     {
       publish_cmd_vel_function(0.0, 0.0, 0.0);
       return false;
@@ -128,6 +161,13 @@ public:
   const float K_ANGULAR = 1.5;
 
 
+  // spiral_move_config
+  std::vector<bool> quarters_visited = std::vector<bool>(4); 
+  float spiral_num = 0.0;
+  const float DECREMENT_YAW_VEL_BY = 0.02;
+
+
+
 
 private:
 
@@ -137,7 +177,15 @@ private:
     std::mt19937 mt(rd());
     std::uniform_real_distribution<float> dist(min_value, max_value);
     return dist(mt);
-    return 1.0;
+  }
+
+  int get_act_quarter_num() const
+  {
+    //1 | 0
+    //-----
+    //2 | 3
+    const int q_num = int(std::ceil( act_val_yaw/ float(M_PI/2) )) + 1;
+    return abs(q_num) > 3 ? 4 : q_num;
   }
 
 };

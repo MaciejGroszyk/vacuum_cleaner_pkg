@@ -26,14 +26,18 @@ class BumperSensor : public rclcpp::Node
     void topic_callback(const sensor_msgs::msg::LaserScan::SharedPtr msg_in)
     {
       const float min_front_laser_range = get_min_front_laser_range(msg_in);
+      auto message = vacuum_cleaner_pkg::msg::Bumper();
 
       if (min_front_laser_range < COLLISION_DISTANCE)
       {
-        auto message = vacuum_cleaner_pkg::msg::Bumper();
         message.collision_detected = true;
-        bumper_publisher_ -> publish(message);
         RCLCPP_INFO(this->get_logger(), "Bumper sensor active. Collision detected on range:'%f'", min_front_laser_range);
       }
+      else
+      {
+        message.collision_detected = false;
+      }
+      bumper_publisher_ -> publish(message);
 
     }
 
@@ -52,7 +56,7 @@ class BumperSensor : public rclcpp::Node
     rclcpp::Subscription<sensor_msgs::msg::LaserScan>::SharedPtr scaner_subscription_;
     rclcpp::Publisher<vacuum_cleaner_pkg::msg::Bumper>::SharedPtr bumper_publisher_;
 
-    const float COLLISION_DISTANCE = 0.35;
+    const float COLLISION_DISTANCE = 0.5;
 };
 
 // int main(int argc, char * argv[])

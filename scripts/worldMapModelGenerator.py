@@ -6,6 +6,8 @@ import cv2
 import os
 import random
 
+from distutils.dir_util import copy_tree
+
 class WorldMapModelGenerator():
 
     def __init__(self):
@@ -83,6 +85,13 @@ class WorldMapModelGenerator():
         self.__generateMapModelStl(path_neg_random_img)
 
 
+    def sendGeneratedMapModelToGazeboModelPath(self):
+        copy_folder_path = self.__package_path + self.LOCAL_MODEL_PATH
+        folder_out_path = "~/.gazebo/models"
+        print(folder_out_path)
+        os.system('cp -r ' + copy_folder_path + ' ' + folder_out_path)
+        # copy_tree(copy_folder_path, folder_out_path)
+
 
 if __name__ == "__main__":
     wmmg = WorldMapModelGenerator()
@@ -91,3 +100,4 @@ if __name__ == "__main__":
     print(wmmg.getPseudoRandomMapFilePath())
 
     wmmg.worldMapModelGenerator()
+    wmmg.sendGeneratedMapModelToGazeboModelPath()

@@ -3,10 +3,13 @@ import aspose.words as aw
 import meshlib.mrmeshpy as mr
 
 import cv2
+import json
 import os
 import random
 
 from distutils.dir_util import copy_tree
+
+
 
 class WorldMapModelGenerator():
 
@@ -23,6 +26,7 @@ class WorldMapModelGenerator():
         self.LOCAL_MODEL_PATH   = "/data/map_model"
         self.CURRENT_MODEL_PNG  = "/data/map_model/current_map_img.png"
         self.MODEL_TIFF_FOLDER  = "/data/map_model/tiff_files"
+
 
     def __readFileImage(self, imageFilePath) -> mr.DistanceMap:
         return mr.loadDistanceMapFromImage(mr.Path(imageFilePath), 0)

@@ -45,8 +45,8 @@ public:
 
   void main()
   {
-    spiral_walk();
-    //random_walk();
+    //spiral_walk();
+    random_walk();
   }
 
 

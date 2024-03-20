@@ -41,17 +41,23 @@ rosidl_generate_interfaces(${PROJECT_NAME}
 add_executable(vacuum_cleaner_node src/vacuum_cleaner_node.cpp)
 ament_target_dependencies(vacuum_cleaner_node rclcpp sensor_msgs geometry_msgs nav_msgs std_msgs tf2 vacuum_cleaner_pkg)
 
+# add_executable(score_algorithm src/score_algorithm.cpp)
+# ament_target_dependencies(score_algorithm rclcpp sensor_msgs geometry_msgs nav_msgs std_msgs tf2 vacuum_cleaner_pkg)
+
+
 # add_executable(bumper_sim src/bumper_sim.cpp)
 # ament_target_dependencies(bumper_sim rclcpp sensor_msgs vacuum_cleaner_pkg)
 
 target_include_directories(
   vacuum_cleaner_node PUBLIC
+  # score_algorithm PUBLIC
   # bumper_sim PUBLIC
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
   $<INSTALL_INTERFACE:include>)
 
 install(TARGETS 
   vacuum_cleaner_node 
+  # score_algorithm
   # bumper_sim
   DESTINATION lib/${PROJECT_NAME})
 

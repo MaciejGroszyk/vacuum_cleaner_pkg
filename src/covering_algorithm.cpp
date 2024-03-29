@@ -6,6 +6,7 @@
 #include <string>
 #include <random>
 
+
 #include "tf2/LinearMath/Quaternion.h"
 #include "tf2/LinearMath/Matrix3x3.h"
 
@@ -31,6 +32,7 @@ class CoveringAlgorithm
 
     angle_goal_val =  get_random_value_from_range(-3.14, 3.14);
     //RCLCPP_INFO(this->get_logger(), "Publishing random float: '%f'", angle_goal_val);
+    
     }
 
 public:

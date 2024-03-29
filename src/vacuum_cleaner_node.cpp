@@ -1,5 +1,5 @@
 #include <memory>
-
+#include <cstdlib>
 #include "rclcpp/rclcpp.hpp"
 
 #include "bumper_sim.cpp"
@@ -8,6 +8,7 @@
 
 int main(int argc, char * argv[])
 {
+
   rclcpp::init(argc, argv);
 
   auto bumper_sim_node = std::make_shared<BumperSensor>();
@@ -19,8 +20,10 @@ int main(int argc, char * argv[])
   executor.add_node(bumper_sim_node);
   executor.add_node(score_algorithm_node);
   executor.add_node(turtlebot_control_node);
+
   executor.spin();
 
   rclcpp::shutdown();
+
   return 0;
 }

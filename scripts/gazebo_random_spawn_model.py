@@ -108,8 +108,8 @@ if __name__ == "__main__":
     # print(GRSM.generateRandomPoseFromImg())
     # print(GRSM.getRandomPose())
 
-    GRSM.spawnModelWithPeriod(count=2)
-    # GRSM.spawnMap()
+    # GRSM.spawnModelWithPeriod(count=2)
+    GRSM.spawnMap()
     # GRSM.spawnCorners()
 
 # if len(sys.argv) < 2:

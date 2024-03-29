@@ -39,9 +39,11 @@ public:
     timer_main = this->create_wall_timer(std::chrono::milliseconds(10), std::bind(&TurtleBotControl::main, this));
 
     collison_handling = false;
-
   } 
-
+  ~TurtleBotControl()
+  {
+      RCLCPP_INFO(this->get_logger(), "Publishing quarter num: '%i'",23);
+  }
 
   void main()
   {

@@ -40,10 +40,10 @@ public:
 
     collison_handling = false;
   } 
-  ~TurtleBotControl()
-  {
-      RCLCPP_INFO(this->get_logger(), "Publishing quarter num: '%i'",23);
-  }
+  // ~TurtleBotControl()
+  // {
+  //     // RCLCPP_INFO(this->get_logger(), "Publishing quarter num: '%i'",23);
+  // }
 
   void main()
   {
@@ -55,8 +55,8 @@ public:
   void spiral_walk()
   {
     const int angle_num = get_act_quarter_num();
-    RCLCPP_INFO(this->get_logger(), "Publishing quarter num: '%i'",angle_num);
-    RCLCPP_INFO(this->get_logger(), "Publishing random float: '%s'", is_all_quarters_visited() ? "true" : "false");
+    // RCLCPP_INFO(this->get_logger(), "Publishing quarter num: '%i'",angle_num);
+    // RCLCPP_INFO(this->get_logger(), "Publishing random float: '%s'", is_all_quarters_visited() ? "true" : "false");
     quarters_visited[angle_num] = true;
 
     if (is_all_quarters_visited())
@@ -91,7 +91,7 @@ public:
     }
     else if ((not act_val_bumper) && (not collison_handling))
     {
-      RCLCPP_INFO(this->get_logger(), "Publishing cmd vel");
+      // RCLCPP_INFO(this->get_logger(), "Publishing cmd vel");
       publish_cmd_vel_function(0.35, 0.0, 0.0);
     }   
   }
@@ -101,13 +101,13 @@ public:
   {
     // TO DO act yaw not in range
     angle_goal_val =  get_random_value_from_range(-3.14, 3.14);
-    RCLCPP_INFO(this->get_logger(), "Publishing random float: '%f'", angle_goal_val);
+    // RCLCPP_INFO(this->get_logger(), "Publishing random float: '%f'", angle_goal_val);
   }
 
   bool collisionHandle()
   {
     float z_vel = (angle_goal_val - act_val_yaw) * K_ANGULAR;
-    RCLCPP_INFO(this->get_logger(), "Publishing z_vel: '%f'", z_vel);
+    // RCLCPP_INFO(this->get_logger(), "Publishing z_vel: '%f'", z_vel);
     if (abs(z_vel) < 0.3)
     {
       publish_cmd_vel_function(0.0, 0.0, 0.0);
@@ -124,7 +124,7 @@ public:
   void bumperCallback(const vacuum_cleaner_pkg::msg::Bumper::SharedPtr msg)
   {
     act_val_bumper = msg -> collision_detected;
-    RCLCPP_INFO(this->get_logger(), "act_val_bumper: '%s'", act_val_bumper ? "true" : "false");
+    // RCLCPP_INFO(this->get_logger(), "act_val_bumper: '%s'", act_val_bumper ? "true" : "false");
   }
 
   void odomCallback(const nav_msgs::msg::Odometry::SharedPtr msg)

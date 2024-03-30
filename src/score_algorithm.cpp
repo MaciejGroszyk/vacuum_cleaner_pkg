@@ -21,18 +21,20 @@ public:
         path_publisher_ = this->create_publisher<nav_msgs::msg::Path>("/path",rclcpp::ServicesQoS());
 
         path_msg = nav_msgs::msg::Path();
-        prev_pose_ = geometry_msgs::msg::Pose();
-        prev_imu_msg = sensor_msgs::msg::Imu();
+        // prev_odom_msg_ = nav_msgs::msg::Odometry();
+        // prev_imu_msg_ = sensor_msgs::msg::Imu();
 
         iter_imu = 0; 
         iter_odom = 0; 
 
-        distance = 0;
+        path_length = 0;
+        cumulative_rotation_change = 0;
     }
 
     void imuCallback(sensor_msgs::msg::Imu::SharedPtr msg)
     {
         RCLCPP_INFO(this->get_logger(), "Reading velocity float: '%f'", msg -> angular_velocity.x);
+        prev_imu_msg_ = msg;
         iter_imu++;
     }
 
@@ -45,19 +47,27 @@ public:
 
         if (iter_odom > 0) 
         {
-            distance += calcDistance(msg -> pose.pose.position, prev_pose_.position);
+            path_length += calcPathLength(msg -> pose.pose.position, prev_odom_msg_ -> pose.pose.position);
+            cumulative_rotation_change += calcRotationChange(msg -> twist.twist, prev_odom_msg_ -> twist.twist);
         }
+        RCLCPP_INFO(this->get_logger(), "Actual path_length: '%f'",path_length);
         
 
-        prev_pose_ = msg -> pose.pose;
+        prev_odom_msg_ = msg;
         iter_odom++;
     }
 
 private:
-    double calcDistance(const geometry_msgs::msg::Point pose,
+    double calcPathLength(const geometry_msgs::msg::Point pose,
                         const geometry_msgs::msg::Point prev_pose) const
     {
         return sqrt(pow(pose.x - prev_pose.x, 2) + pow(pose.y - prev_pose.y, 2));
+    }
+
+    double calcRotationChange(  const geometry_msgs::msg::Twist msg,
+                                const geometry_msgs::msg::Twist prev_msg) const
+    {
+        return abs(prev_msg.angular.z - msg.angular.z);
     }
 
     void pathPublish(nav_msgs::msg::Odometry::SharedPtr msg)
@@ -79,11 +89,18 @@ private:
     rclcpp::Subscription<nav_msgs::msg::Odometry>::SharedPtr odom_subscription_;
     rclcpp::Subscription<sensor_msgs::msg::Imu>::SharedPtr imu_subscription_;
     rclcpp::Publisher<nav_msgs::msg::Path>::SharedPtr path_publisher_;
-    geometry_msgs::msg::Pose prev_pose_;
+    
     nav_msgs::msg::Path path_msg;
-    sensor_msgs::msg::Imu prev_imu_msg;
 
+    // prev msgs
+    nav_msgs::msg::Odometry::SharedPtr prev_odom_msg_;
+    sensor_msgs::msg::Imu::SharedPtr prev_imu_msg_;
+
+    //sub iterators
     unsigned long long int iter_imu;
     unsigned long long int iter_odom;
-    double distance;
+
+    //data
+    double path_length;
+    double cumulative_rotation_change;
 };

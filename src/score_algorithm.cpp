@@ -29,12 +29,55 @@ public:
 
         path_length = 0;
         cumulative_rotation_change = 0;
+        velocity_smoothness = 0;
+        rotation_smoothness = 0;
+
+        oscillations_percentage = 0;
+        inplace_rotation_percentage = 0;
+
+        
+        v_x_act = 0;
+        v_y_act = 0;
+
+        time_start = 0;
+        time_end = 0;
+    }
+    ~ScoreCoveringAlgorithm()
+    {
+        RCLCPP_INFO(this->get_logger(), "Path length: '%f'", path_length);
+        RCLCPP_INFO(this->get_logger(), "Cumulative rotation change: '%f'", cumulative_rotation_change);
+        RCLCPP_INFO(this->get_logger(), "Velocity smoothness: '%f'", velocity_smoothness/(iter_imu-1));
+        RCLCPP_INFO(this->get_logger(), "Rotation smoothness: '%f'", rotation_smoothness/(iter_imu-1));
+
+        if (time_end - time_start > 0)
+        {
+            RCLCPP_INFO(this->get_logger(), "Oscillations percentage: '%f'", oscillations_percentage * (100)/(time_end - time_start));
+            RCLCPP_INFO(this->get_logger(), "Inplace rotation percentage: '%f'", inplace_rotation_percentage * (100)/(time_end - time_start));
+        }
+
     }
 
     void imuCallback(sensor_msgs::msg::Imu::SharedPtr msg)
     {
         RCLCPP_INFO(this->get_logger(), "Reading velocity float: '%f'", msg -> angular_velocity.x);
+
+        if (iter_imu > 0)
+        {
+            calcActualValue(msg, prev_imu_msg_);
+            velocity_smoothness += calcVelocitySmoothness(msg, prev_imu_msg_);
+            rotation_smoothness += calcRotationSmoothness(msg, prev_imu_msg_);
+            oscillations_percentage += calcOscillationsTime(msg, prev_imu_msg_);
+            inplace_rotation_percentage += calcInPlaceRotationTime(msg, prev_imu_msg_);
+            time_end = double(msg -> header.stamp.sec);
+        }
+        else
+        {
+            time_start = double(msg -> header.stamp.sec);
+        }
+
         prev_imu_msg_ = msg;
+        v_x_prev = v_x_act;
+        v_y_prev = v_y_act;
         iter_imu++;
     }
 
@@ -70,6 +113,74 @@ private:
         return abs(prev_msg.angular.z - msg.angular.z);
     }
 
+    double calcVelocitySmoothness(  const sensor_msgs::msg::Imu::SharedPtr msg,
+                                    const sensor_msgs::msg::Imu::SharedPtr prev_msg) const
+    {
+        double numerator = double(msg -> header.stamp.sec) - double(prev_msg -> header.stamp.sec);
+
+        if (numerator > 0)
+        {
+            double denominator = sqrt(  pow(v_x_act - v_x_prev, 2) + 
+                                        pow(v_y_act - v_y_prev, 2));
+            return denominator/numerator;
+        }
+        else
+            return 0;
+    }
+
+    void calcActualValue(   const sensor_msgs::msg::Imu::SharedPtr msg,
+                            const sensor_msgs::msg::Imu::SharedPtr prev_msg)
+    {
+        double time_sec = double(msg -> header.stamp.sec) - double(prev_msg -> header.stamp.sec);
+        v_x_act = v_x_act + (msg -> linear_acceleration.x) * time_sec;
+        v_y_act = v_y_act + (msg -> linear_acceleration.y) * time_sec;
+    }
+
+    double calcRotationSmoothness(  const sensor_msgs::msg::Imu::SharedPtr msg,
+                                    const sensor_msgs::msg::Imu::SharedPtr prev_msg) const
+    {
+        double numerator = double(msg -> header.stamp.sec) - double(prev_msg -> header.stamp.sec);
+
+        if (numerator > 0)
+        {
+            double denominator = abs(msg -> angular_velocity.z - prev_msg -> angular_velocity.z);
+            return denominator/numerator;
+        }
+        else
+            return 0;
+    }
+
+    double calcOscillationsTime( const sensor_msgs::msg::Imu::SharedPtr msg,
+                                const sensor_msgs::msg::Imu::SharedPtr prev_msg) const
+    {
+        double V_OSC = 0.01;
+        double v_lin = sqrt(pow(v_x_act, 2) + 
+                            pow(v_y_act, 2));
+        double v_z = abs(msg -> angular_velocity.z);
+
+        if (v_lin < V_OSC && v_x_act < V_OSC && v_y_act < V_OSC && v_z < V_OSC)
+        {
+            return double(msg -> header.stamp.sec) - double(prev_msg -> header.stamp.sec);
+        }
+        else
+            return 0;
+    }
+
+    double calcInPlaceRotationTime( const sensor_msgs::msg::Imu::SharedPtr msg,
+                                    const sensor_msgs::msg::Imu::SharedPtr prev_msg) const
+    {
+        double V_OSC = 0.01;
+        // double v_x = abs(msg -> angular_velocity.x);
+        // double v_y = abs(msg -> angular_velocity.y);
+
+        if (msg -> angular_velocity.z > V_OSC )
+        {
+            return double(msg -> header.stamp.sec) - double(prev_msg -> header.stamp.sec);
+        }
+        else
+            return 0;
+    }
+
     void pathPublish(nav_msgs::msg::Odometry::SharedPtr msg)
     {
         auto pose_msg = geometry_msgs::msg::PoseStamped();
@@ -101,6 +212,18 @@ private:
     unsigned long long int iter_odom;
 
     //data
+    double time_start;
+    double time_end;
+
+    double v_x_act;
+    double v_y_act;
+    double v_x_prev;
+    double v_y_prev;
+
     double path_length;
     double cumulative_rotation_change;
+    double velocity_smoothness;
+    double rotation_smoothness;
+    double oscillations_percentage;
+    double inplace_rotation_percentage;
 };

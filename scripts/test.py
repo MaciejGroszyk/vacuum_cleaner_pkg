@@ -13,3 +13,4 @@ if __name__ == "__main__":
     dlv.drawRandomLineWithDoor()
 
     idc.saveImage()
+    

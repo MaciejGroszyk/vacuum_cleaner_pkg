@@ -31,7 +31,7 @@ class BumperSensor : public rclcpp::Node
       if (min_front_laser_range < COLLISION_DISTANCE)
       {
         message.collision_detected = true;
-        RCLCPP_INFO(this->get_logger(), "Bumper sensor active. Collision detected on range:'%f'", min_front_laser_range);
+        //RCLCPP_INFO(this->get_logger(), "Bumper sensor active. Collision detected on range:'%f'", min_front_laser_range);
       }
       else
       {

@@ -6,6 +6,10 @@
 #include <nav_msgs/msg/path.hpp>
 #include <sensor_msgs/msg/imu.hpp>
 
+#include <opencv2/opencv.hpp> 
+#include "draw_robot_pose_on_map.cpp"
+
+
 using std::placeholders::_1;
 
 
@@ -59,7 +63,7 @@ public:
 
     void imuCallback(sensor_msgs::msg::Imu::SharedPtr msg)
     {
-        RCLCPP_INFO(this->get_logger(), "Reading velocity float: '%f'", msg -> angular_velocity.x);
+        //RCLCPP_INFO(this->get_logger(), "Reading velocity float: '%f'", msg -> angular_velocity.x);
 
         if (iter_imu > 0)
         {
@@ -93,8 +97,9 @@ public:
             path_length += calcPathLength(msg -> pose.pose.position, prev_odom_msg_ -> pose.pose.position);
             cumulative_rotation_change += calcRotationChange(msg -> twist.twist, prev_odom_msg_ -> twist.twist);
         }
-        RCLCPP_INFO(this->get_logger(), "Actual path_length: '%f'",path_length);
+        //RCLCPP_INFO(this->get_logger(), "Actual path_length: '%f'",path_length);
         
+        drawRobotPoseOnMap.drawPose(msg -> pose.pose.position.x, msg -> pose.pose.position.y);
 
         prev_odom_msg_ = msg;
         iter_odom++;
@@ -193,10 +198,10 @@ private:
         path_msg.poses.push_back(pose_msg);
         path_publisher_ -> publish(path_msg);
     }
-    void main()
-    {
+    // void main()
+    // {
         
-    }
+    // }
     rclcpp::Subscription<nav_msgs::msg::Odometry>::SharedPtr odom_subscription_;
     rclcpp::Subscription<sensor_msgs::msg::Imu>::SharedPtr imu_subscription_;
     rclcpp::Publisher<nav_msgs::msg::Path>::SharedPtr path_publisher_;
@@ -226,4 +231,6 @@ private:
     double rotation_smoothness;
     double oscillations_percentage;
     double inplace_rotation_percentage;
+
+    DrawRobotPoseOnMap drawRobotPoseOnMap;
 };

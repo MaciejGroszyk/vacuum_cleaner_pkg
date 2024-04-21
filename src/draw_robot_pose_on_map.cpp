@@ -36,27 +36,44 @@ private:
     float map_width;
     float map_height;
 
+    int map_size;
+
 public:
     DrawRobotPoseOnMap()
     {
         readCurrentMapPng();
         readCurrentMapSize();
+        map_size = getBlackPixelNum();
+
     }
     ~DrawRobotPoseOnMap()
     {
         saveCurrentMapPng();
-        std::cout << iter << std::endl;
+        std::cout << float(getBluePixelNum())/ float(map_size) * 100 << "%" << std::endl;
     }
 
+    int getBlackPixelNum()
+    {
+        cv::Mat bw, image_gray;
+        cv::cvtColor(image, image_gray, cv::COLOR_BGR2GRAY);
+        cv::threshold(image_gray, bw, 40, 255, cv::THRESH_BINARY_INV | cv::THRESH_OTSU);
+
+        std::vector<cv::Point> black_pixels;   // output, locations of non-zero pixels
+        cv::findNonZero(bw, black_pixels);
+        return black_pixels.size();
+    }
+
+    int getBluePixelNum()
+    {
+        cv::Mat bw;
+        cv::inRange(image, cv::Vec3b(250,0,0), cv::Vec3b(255,1,1), bw); 
+        // std::cout << cv::countNonZero(bw) << "blue" << std::endl;
+        return cv::countNonZero(bw);
+    }
 
     void drawPose(const float &x, const float &y)
     {
         std::vector<cv::Point> rec = getScaledRobotPose(cv::Point(int(x*SCALE), int(y*SCALE)));
-        std::cout << "----------------" << std::endl;
-        std::cout << y << std::endl;
-        std::cout << x << std::endl;
-        std::cout << y*SCALE << std::endl;
-        std::cout << x*SCALE << std::endl;
         cv::rectangle(image, rec[0], rec[1], cv::Vec3b(255,0,0), -1, cv::LINE_8);
         ++iter;
     }

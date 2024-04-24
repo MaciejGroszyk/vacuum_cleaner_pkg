@@ -36,7 +36,7 @@ find_package(vacuum_cleaner_pkg REQUIRED)
 
 rosidl_generate_interfaces(${PROJECT_NAME}
   "msg/Bumper.msg"
-  DEPENDENCIES 
+  DEPENDENCIES std_msgs
 )
 
 

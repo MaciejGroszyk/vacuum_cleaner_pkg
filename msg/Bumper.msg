@@ -1,1 +1,3 @@
-bool collision_detected
+bool front_detected
+bool left_detected
+bool right_detected

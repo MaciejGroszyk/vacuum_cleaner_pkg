@@ -24,10 +24,37 @@ using std::placeholders::_1;
 
 class TurtleBotControl : public rclcpp::Node
 {
+private:
+  double time_start;
+  std::string mode;
+  float angle_goal_val;
+  float act_val_yaw;
+  bool front_detected;
+  bool right_detected;
+  bool left_detected;
+  bool collison_handling;
+  bool move_from_wall_handling;
+  double move_from_wall_time;
+  float move_from_wall_distance = 2;
+  const float K_ANGULAR = 1.5;
+
+  // spiral_move_config
+  std::vector<bool> quarters_visited = std::vector<bool>(4); 
+  float spiral_num = 0.0;
+  const float DECREMENT_YAW_VEL_BY = 0.2;
+  const float START_YAW_VEL = 1.2;
+
+  
+  rclcpp::Publisher<geometry_msgs::msg::Twist>::SharedPtr cmd_vel_publisher_;
+  rclcpp::Subscription<nav_msgs::msg::Odometry>::SharedPtr odom_subscription_;
+  rclcpp::Subscription<vacuum_cleaner_pkg::msg::Bumper>::SharedPtr bumper_subscription_;
+  rclcpp::TimerBase::SharedPtr timer_main;
+
 public:
-  TurtleBotControl()
+  TurtleBotControl(std::string mode_in)
   : Node("turtlebot3_main_cpp")
   {
+    mode = mode_in;
     cmd_vel_publisher_ = this->create_publisher<geometry_msgs::msg::Twist>(
       "/cmd_vel",
       rclcpp::ServicesQoS());
@@ -41,6 +68,8 @@ public:
     timer_main = this->create_wall_timer(std::chrono::milliseconds(10), std::bind(&TurtleBotControl::main, this));
 
     collison_handling = false;
+
+    time_start = this->get_clock()->now().seconds();
   } 
   // ~TurtleBotControl()
   // {
@@ -49,8 +78,18 @@ public:
 
   void main()
   {
-    spiral_walk();
-    //random_walk();
+    if (this->get_clock()->now().seconds() - time_start <= 10)
+    {
+      if (mode == "spiral")
+        spiral_walk();
+      else if (mode == "random")
+        random_walk();
+    }
+    else
+    {
+      publish_cmd_vel_function(0.0, 0.0, 0.0);
+      rclcpp::shutdown();
+    }
   }
 
 
@@ -181,34 +220,6 @@ public:
       //RCLCPP_INFO(this->get_logger(), "Cmd vel published");
   }
 
-  rclcpp::Publisher<geometry_msgs::msg::Twist>::SharedPtr cmd_vel_publisher_;
-  rclcpp::Subscription<nav_msgs::msg::Odometry>::SharedPtr odom_subscription_;
-  rclcpp::Subscription<vacuum_cleaner_pkg::msg::Bumper>::SharedPtr bumper_subscription_;
-  rclcpp::TimerBase::SharedPtr timer_main;
-
-  float angle_goal_val;
-  float act_val_yaw;
-  bool front_detected;
-  bool right_detected;
-  bool left_detected;
-  bool collison_handling;
-  bool move_from_wall_handling;
-  double move_from_wall_time;
-  float move_from_wall_distance = 2;
-  const float K_ANGULAR = 1.5;
-
-
-
-  // spiral_move_config
-  std::vector<bool> quarters_visited = std::vector<bool>(4); 
-  float spiral_num = 0.0;
-  const float DECREMENT_YAW_VEL_BY = 0.2;
-  const float START_YAW_VEL = 1.2;
-
-
-
-private:
-
   float get_random_value_from_range(const float min_value, const float max_value) const
   {
     std::random_device rd;
@@ -225,14 +236,4 @@ private:
     const int q_num = int(std::ceil( act_val_yaw/ float(M_PI/2) )) + 1;
     return abs(q_num) > 3 ? 4 : q_num;
   }
-
 };
-
-
-// int main(int argc, char * argv[])
-// {
-//   rclcpp::init(argc, argv);
-//   rclcpp::spin(std::make_shared<TurtleBotNode>());
-//   rclcpp::shutdown();
-//   return 0;
-// }

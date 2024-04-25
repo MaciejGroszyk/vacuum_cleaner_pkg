@@ -8,11 +8,12 @@
 
 int main(int argc, char * argv[])
 {
-
+  std::string mode_in = argv[1];
+  std::cout << "Mode: " << mode_in << std::endl;
   rclcpp::init(argc, argv);
 
   auto bumper_sim_node = std::make_shared<BumperSensor>();
-  auto turtlebot_control_node = std::make_shared<TurtleBotControl>();
+  auto turtlebot_control_node = std::make_shared<TurtleBotControl>(mode_in);
   auto score_algorithm_node = std::make_shared<ScoreCoveringAlgorithm>();
 
   rclcpp::executors::MultiThreadedExecutor executor;

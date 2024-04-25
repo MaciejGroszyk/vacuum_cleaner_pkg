@@ -56,7 +56,7 @@ public:
     {
         cv::Mat bw, image_gray;
         cv::cvtColor(image, image_gray, cv::COLOR_BGR2GRAY);
-        cv::threshold(image_gray, bw, 40, 255, cv::THRESH_BINARY_INV | cv::THRESH_OTSU);
+        cv::threshold(image_gray, bw, 127, 255, cv::THRESH_BINARY_INV | cv::THRESH_OTSU);
 
         std::vector<cv::Point> black_pixels;   // output, locations of non-zero pixels
         cv::findNonZero(bw, black_pixels);
@@ -66,7 +66,7 @@ public:
     int getBluePixelNum()
     {
         cv::Mat bw;
-        cv::inRange(image, cv::Vec3b(250,0,0), cv::Vec3b(255,1,1), bw); 
+        cv::inRange(image, cv::Vec3b(240,0,0), cv::Vec3b(255,1,1), bw); 
         // std::cout << cv::countNonZero(bw) << "blue" << std::endl;
         return cv::countNonZero(bw);
     }

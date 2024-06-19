@@ -31,12 +31,47 @@ public:
         iter_imu = 0; 
         iter_odom = 0; 
 
+        /* The `path_length` variable in the `ScoreCoveringAlgorithm` class is used to calculate the
+        total length covered by the robot along its path. It is updated in the `odomCallback`
+        function by calculating the Euclidean distance between the current position of the robot and
+        its previous position. This provides a measure of the total distance traveled by the robot
+        during its movement. */
         path_length = 0;
+        /* The `cumulative_rotation_change` variable in the `ScoreCoveringAlgorithm` class is used to
+        keep track of the total change in rotation that the robot has undergone during its movement.
+        It is calculated in the `odomCallback` function by comparing the angular velocities of the
+        current and previous odometry messages. This provides a measure of how much the robot has
+        rotated over time, which can be useful for analyzing its movement patterns and behaviors. */
         cumulative_rotation_change = 0;
+        /* The `velocity_smoothness` variable in the `ScoreCoveringAlgorithm` class is used to
+        calculate the smoothness of the robot's velocity changes over time. It is updated in the
+        `imuCallback` function by calculating the difference in velocity between the current and
+        previous IMU messages and dividing it by the time difference between the messages. This
+        provides a measure of how smoothly the robot's velocity is changing during its movement. */
         velocity_smoothness = 0;
+
+        /* The `rotation_smoothness` variable in the `ScoreCoveringAlgorithm` class is used to
+        calculate the smoothness of the robot's rotation changes over time. It is updated in the
+        `imuCallback` function by calculating the difference in angular velocity between the current
+        and previous IMU messages and dividing it by the time difference between the messages. This
+        provides a measure of how smoothly the robot's rotation is changing during its movement. */
         rotation_smoothness = 0;
 
+        /* The `oscillations_percentage` variable in the `ScoreCoveringAlgorithm` class is used to
+        calculate the percentage of time the robot spends in an oscillatory motion state. It is
+        updated in the `imuCallback` function by calculating the time duration when the linear and
+        angular velocities of the robot are below a certain threshold value (`V_OSC`). If the
+        velocities are below this threshold, it indicates that the robot is oscillating or not
+        moving significantly in a particular direction. */
         oscillations_percentage = 0;
+        /* The `inplace_rotation_percentage` variable in the `ScoreCoveringAlgorithm` class is used to
+        calculate the percentage of time the robot spends in an in-place rotation state. It is
+        updated in the `imuCallback` function by calculating the time duration when the robot is
+        rotating in place, meaning its angular velocity is above a certain threshold value
+        (`V_OSC`). If the angular velocity is above this threshold, it indicates that the robot is
+        rotating in place rather than moving in a particular direction. The percentage of time spent
+        in this in-place rotation state can provide insights into the robot's behavior and movement
+        patterns. */
         inplace_rotation_percentage = 0;
 
         

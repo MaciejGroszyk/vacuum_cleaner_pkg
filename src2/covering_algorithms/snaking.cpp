@@ -1,5 +1,5 @@
 
-#include "../src/bumper_sim.cpp"
+
 #include "CoveringAlgorithm.h"
 
 class Snaking : public CoveringAlgorithm

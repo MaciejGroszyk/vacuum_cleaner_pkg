@@ -1,11 +1,10 @@
-#include "rclcpp/rclcpp.hpp"
-#include <nav_msgs/msg/odometry.hpp>
+#include "OdomHandler.h"
 
 using std::placeholders::_1;
 
 OdomHandler::OdomHandler(): Node("odometry_handler")
 {
-odom_sub_ = this->create_subscription<nav_msgs::msg::Odometry>("/odom", 20, std::bind(&TurtleBotControl::odomCallback, this, _1));
+    odom_sub_ = this->create_subscription<nav_msgs::msg::Odometry>("/odom", 20, std::bind(&OdomHandler::odomCallback, this, _1));
 }
 
 void OdomHandler::odomCallback(const nav_msgs::msg::Odometry::SharedPtr msg)

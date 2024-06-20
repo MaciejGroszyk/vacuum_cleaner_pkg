@@ -1,8 +1,8 @@
 #ifndef COVERINGALGORITHM_H
 #define COVERINGALGORITHM_H
 
-#include "RobotControler.h"
-#include "OdomHandler.h"
+#include "../robot_handler/RobotControler.h"
+#include "../robot_handler/OdomHandler.h"
 
 // #include "../src/bumper_sim.cpp"
 #include "rclcpp/rclcpp.hpp"

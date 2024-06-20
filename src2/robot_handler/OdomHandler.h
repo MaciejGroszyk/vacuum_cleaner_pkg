@@ -1,6 +1,8 @@
 #ifndef ODOMHANDLER_H
 #define ODOMHANDLER_H
 
+#include "tf2/LinearMath/Quaternion.h"
+#include "tf2/LinearMath/Matrix3x3.h"
 #include "rclcpp/rclcpp.hpp"
 #include <nav_msgs/msg/odometry.hpp>
 

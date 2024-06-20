@@ -48,13 +48,22 @@ add_executable(my_fun_node src/my_fun.cpp)
 ament_target_dependencies(my_fun_node rclcpp sensor_msgs nlohmann_json geometry_msgs nav_msgs ament_index_cpp std_msgs tf2 OpenCV vacuum_cleaner_pkg)
 
 add_executable(keypad_node 
-    src2/robot_control_keypad.cpp 
-    src2/RobotControler.cpp
-    src2/RobotControler.h)
+    src2/robot_control_keypad.cpp
+    src2/robot_handler/RobotControler.cpp
+    src2/robot_handler/RobotControler.h
+    )
 ament_target_dependencies(keypad_node rclcpp geometry_msgs ament_index_cpp vacuum_cleaner_pkg)
 
 
-add_executable(main_node src2/main.cpp)
+add_executable(main_node 
+  src2/main.cpp
+  src2/robot_handler/LaserHandler.cpp
+  src2/robot_handler/LaserHandler.h
+  src2/robot_handler/OdomHandler.cpp
+  src2/robot_handler/OdomHandler.h
+  src2/robot_handler/RobotControler.cpp
+  src2/robot_handler/RobotControler.h
+  )
 ament_target_dependencies(main_node rclcpp nlohmann_json sensor_msgs geometry_msgs nav_msgs ament_index_cpp std_msgs tf2 OpenCV vacuum_cleaner_pkg)
 
 

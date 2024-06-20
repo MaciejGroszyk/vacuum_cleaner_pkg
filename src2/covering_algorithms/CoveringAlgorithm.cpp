@@ -1,6 +1,5 @@
 
 #include "CoveringAlgorithm.h"
-#include "OdomHandler.h"
 
 using std::placeholders::_1;
 

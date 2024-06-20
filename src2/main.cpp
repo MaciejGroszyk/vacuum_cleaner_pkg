@@ -1,7 +1,8 @@
 
 #include "rclcpp/rclcpp.hpp"
-#include "CoveringAlgorithm.h"
-#include "snaking.cpp"
+
+#include "covering_algorithms/CoveringAlgorithm.h"
+#include "covering_algorithms/snaking.cpp"
 
 int main(int argc, char * argv[])
 {

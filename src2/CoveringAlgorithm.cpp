@@ -1,23 +1,23 @@
 
 #include "CoveringAlgorithm.h"
+#include "OdomHandler.h"
 
 using std::placeholders::_1;
 
-class CoveringAlgorithm
+CoveringAlgorithm::CoveringAlgorithm()
 {
-public:
-    CoveringAlgorithm()
-    {
-        // bumper_sim_node = std::make_shared<BumperSensor>();
-        rc_node         = std::make_shared<RobotControler>();
+    // bumper_sim_node = std::make_shared<BumperSensor>();
+    rc_node         = std::make_shared<RobotControler>();
+    oh_node         = std::make_shared<OdomHandler>();
 
-        rclcpp::executors::MultiThreadedExecutor executor;
+    rclcpp::executors::MultiThreadedExecutor executor;
 
-        // executor.add_node(bumper_sim_node);
-        executor.add_node(rc_node);
+    // executor.add_node(bumper_sim_node);
+    executor.add_node(rc_node);
+    executor.add_node(oh_node);
 
-        executor.spin();
-    }
+    executor.spin();
+}
 
 
 // private:

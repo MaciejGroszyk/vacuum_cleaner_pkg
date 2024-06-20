@@ -11,11 +11,11 @@ class OdomHandler : public rclcpp::Node
 
 private:
     rclcpp::Subscription<nav_msgs::msg::Odometry>::SharedPtr odom_sub_;
-    double act_val_yaw;
+    
 
 public:
     OdomHandler();
-
+    double act_val_yaw;
     void odomCallback(const nav_msgs::msg::Odometry::SharedPtr msg);
 };
 

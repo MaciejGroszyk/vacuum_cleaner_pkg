@@ -63,6 +63,12 @@ add_executable(main_node
   src2/robot_handler/OdomHandler.h
   src2/robot_handler/RobotControler.cpp
   src2/robot_handler/RobotControler.h
+  src2/covering_algorithms/CoveringAlgorithm.cpp
+  src2/covering_algorithms/CoveringAlgorithm.h
+  src2/covering_algorithms/CoveringAlgorithmHandler.cpp
+  src2/covering_algorithms/CoveringAlgorithmHandler.h
+  src2/covering_algorithms/RandomWalk.cpp
+  src2/covering_algorithms/RandomWalk.h
   )
 ament_target_dependencies(main_node rclcpp nlohmann_json sensor_msgs geometry_msgs nav_msgs ament_index_cpp std_msgs tf2 OpenCV vacuum_cleaner_pkg)
 

@@ -9,6 +9,7 @@ OdomHandler::OdomHandler(): Node("odometry_handler")
 
 void OdomHandler::odomCallback(const nav_msgs::msg::Odometry::SharedPtr msg)
 {
+    RCLCPP_INFO(this->get_logger(), "oh_node");
     tf2::Quaternion q(
         msg->pose.pose.orientation.x,
         msg->pose.pose.orientation.y,

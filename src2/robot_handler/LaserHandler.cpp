@@ -3,33 +3,56 @@
 LaserHandler::LaserHandler()
     : Node("bumber_sensor_sim")
     {
-    scaner_subscription_ = this->create_subscription<sensor_msgs::msg::LaserScan>("/scan", 10, std::bind(&LaserHandler::laser_callback, this, _1));
+    scaner_subscription_ = this->create_subscription<sensor_msgs::msg::LaserScan>("/scan", 20, std::bind(&LaserHandler::laser_callback, this, _1));
 
     bumper_publisher_ = this->create_publisher<vacuum_cleaner_pkg::msg::Bumper>("/bumper_sensor", 10);
 
     }
 
 void LaserHandler::laser_callback(const sensor_msgs::msg::LaserScan::SharedPtr msg_in)
-    {
+{
+    RCLCPP_INFO(this->get_logger(), "lh_node");
     const float min_front_laser_range = get_min_front_laser_range(msg_in);
     const float min_left_laser_range = get_min_left_laser_range(msg_in);
     const float min_right_laser_range = get_min_right_laser_range(msg_in);
     auto message = vacuum_cleaner_pkg::msg::Bumper();
 
-    message.front_detected = isCollisionFront(min_front_laser_range);
-    message.left_detected = isCollision(min_left_laser_range);
-    message.right_detected = isCollision(min_right_laser_range);
+    front_detected_ = isCollisionFront(min_front_laser_range);
+    left_detected_  = isCollision(min_left_laser_range);
+    right_detected_ = isCollision(min_right_laser_range);
+    message.front_detected = front_detected_;
+    message.left_detected  = left_detected_;
+    message.right_detected = right_detected_;
     bumper_publisher_ -> publish(message);
-    }
+}
 
 bool LaserHandler::isCollisionFront(const float &bumper_val) const
 {
     return COLLISION_DISTANCE_FRONT > bumper_val ? true : false;
 }
+bool  LaserHandler::isCollisionFront() const
+{
+    return front_detected_;
+}
+
+bool  LaserHandler::isCollisionLeft() const
+{
+    return left_detected_;
+}
+
+bool  LaserHandler::isCollisionRight() const
+{
+    return right_detected_;
+}
 
 bool LaserHandler::isCollision(const float &bumper_val) const
 {
     return COLLISION_DISTANCE > bumper_val ? true : false;
+}
+
+bool  LaserHandler::isCollision() const
+{
+    return front_detected_ || left_detected_ || right_detected_;
 }
 
 float LaserHandler::get_min_front_laser_range(const sensor_msgs::msg::LaserScan::SharedPtr msg_in) const 
@@ -58,3 +81,4 @@ float LaserHandler::get_min_right_laser_range(const sensor_msgs::msg::LaserScan:
 
     return *std::min_element(v.end() - RANGES_SIZE/4 - RANGES_SIZE/SCALE, v.end() - RANGES_SIZE/4 + RANGES_SIZE/SCALE);
 }
+

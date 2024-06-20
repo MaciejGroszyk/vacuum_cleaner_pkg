@@ -36,6 +36,16 @@ private:
   bool move_from_wall_handling;
   double move_from_wall_time;
   float move_from_wall_distance = 2;
+  /* The line `const float K_ANGULAR = 1.5;` is defining a constant variable `K_ANGULAR` of type
+  `float` with a value of `1.5`. This constant is used in the code for calculating the angular
+  velocity during collision handling in the TurtleBotControl class. The value `1.5` is used as a
+  multiplier to adjust the angular velocity based on the difference between the goal angle and the
+  actual yaw angle of the robot. */
+  /* The line `const float K_ANGULAR = 1.5;` is declaring a constant variable `K_ANGULAR` of type
+  `float` with a value of `1.5`. This constant is used in the code for calculating the angular
+  velocity during collision handling in the TurtleBotControl class. The value `1.5` is a predefined
+  constant that determines how fast the robot should rotate to align itself with the desired angle
+  goal when encountering an obstacle. */
   const float K_ANGULAR = 1.5;
 
   // spiral_move_config

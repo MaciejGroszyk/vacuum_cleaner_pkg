@@ -12,9 +12,9 @@ class LaserHandler : public rclcpp::Node
 {
 
 private:
-    const uint SCALE = 12;
-    const float COLLISION_DISTANCE_FRONT = 0.55;
-    const float COLLISION_DISTANCE = 0.27;
+    const uint SCALE_ = 12;
+    const float COLLISION_DISTANCE_FRONT_ = 0.6;
+    const float COLLISION_DISTANCE_ = 0.3;
     rclcpp::Subscription<sensor_msgs::msg::LaserScan>::SharedPtr scanner_subscription_;
     rclcpp::Publisher<vacuum_cleaner_pkg::msg::Bumper>::SharedPtr bumper_publisher_;
 
@@ -30,15 +30,15 @@ public:
     bool isCollision() const;
 
 private:
-    void laser_callback(const sensor_msgs::msg::LaserScan::SharedPtr msg_in);
+    void laserCallback_(const sensor_msgs::msg::LaserScan::SharedPtr msg_in);
 
 
     bool isCollisionFront(const float &bumper_val) const;
     bool isCollision(const float &bumper_val) const;
 
-    float get_min_front_laser_range(const sensor_msgs::msg::LaserScan::SharedPtr msg_in) const;
-    float get_min_left_laser_range(const sensor_msgs::msg::LaserScan::SharedPtr msg_in) const;
-    float get_min_right_laser_range(const sensor_msgs::msg::LaserScan::SharedPtr msg_in) const;   
+    float getMinFrontLaserRange_(const sensor_msgs::msg::LaserScan::SharedPtr msg_in) const;
+    float getMinLeftLaserRange_(const sensor_msgs::msg::LaserScan::SharedPtr msg_in) const;
+    float getMinRightLaserRange_(const sensor_msgs::msg::LaserScan::SharedPtr msg_in) const;   
 };
 
 #endif

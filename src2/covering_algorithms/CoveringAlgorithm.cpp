@@ -31,7 +31,7 @@ bool CoveringAlgorithm::rotate_to_angle(const float angle_goal)
     }
     else
     {
-        rc_node -> publish_cmd_vel_function(0.0, 0.0, z_vel);
+        rc_node -> move(0.0, 0.0, z_vel);
         return false;
     }
 }

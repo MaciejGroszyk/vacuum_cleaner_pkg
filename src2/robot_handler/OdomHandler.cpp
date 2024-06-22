@@ -4,12 +4,12 @@ using std::placeholders::_1;
 
 OdomHandler::OdomHandler(): Node("odometry_handler")
 {
-    odom_sub_ = this->create_subscription<nav_msgs::msg::Odometry>("/odom", 30, std::bind(&OdomHandler::odomCallback, this, _1));
+    odom_sub_ = this->create_subscription<nav_msgs::msg::Odometry>("/odom", 30, std::bind(&OdomHandler::odomCallback_, this, _1));
 }
 
-void OdomHandler::odomCallback(const nav_msgs::msg::Odometry::SharedPtr msg)
+void OdomHandler::odomCallback_(const nav_msgs::msg::Odometry::SharedPtr msg)
 {
-    RCLCPP_INFO(this->get_logger(), "oh_node");
+    // RCLCPP_INFO(this->get_logger(), "odom_handler_node");
     tf2::Quaternion q(
         msg->pose.pose.orientation.x,
         msg->pose.pose.orientation.y,

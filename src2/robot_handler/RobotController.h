@@ -25,7 +25,7 @@ public:
     };
     void move(const MoveCommands&);
     void move(const float x_val, const float y_val, const float z_val);
-    void publish_cmd_vel_function(const float, const float, const float);
+    // void publishCmdVel(const float, const float, const float);
 };
 
 #endif

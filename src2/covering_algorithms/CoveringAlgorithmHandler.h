@@ -8,13 +8,16 @@
 class CoveringAlgorithmHandler
 {
 private:
-    /* data */
+    void start_(std::shared_ptr<CoveringAlgorithm> ca_node);
 public:
-    CoveringAlgorithmHandler(/* args */);
+    CoveringAlgorithmHandler();
     ~CoveringAlgorithmHandler();
+
     rclcpp::executors::MultiThreadedExecutor executor;
+
     void startRandomWalk();
     void startSpiralWalk();
+    void startSnackingWalk();
 
 };
 

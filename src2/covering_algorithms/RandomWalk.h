@@ -12,13 +12,11 @@ private:
     bool collison_handling_;
     float angle_goal_;
 
-    void algorithm();
-
 public:
     RandomWalk();
     ~RandomWalk();
-    void start();
-    void stop();
+
+    void algorithm();
 };
 
 #endif

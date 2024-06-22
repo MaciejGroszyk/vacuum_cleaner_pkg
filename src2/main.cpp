@@ -9,13 +9,13 @@ int main(int argc, char * argv[])
 {
     rclcpp::init(argc, argv);
 
-    // Snaking snak_alg;
-    // auto rw_node = std::make_shared<RandomWalk>();
-    // rw_node -> start();  
+    std::string mode_in = argv[1];
+    std::cout << "Mode: " << mode_in << std::endl;
 
-    // RandomWalk randomWalk;
     CoveringAlgorithmHandler cah;
-    cah.startRandomWalk();
+
+    if (mode_in == "random") cah.startRandomWalk();
+    else if (mode_in == "spiral") cah.startSpiralWalk();
 
     rclcpp::shutdown();
     return 0;

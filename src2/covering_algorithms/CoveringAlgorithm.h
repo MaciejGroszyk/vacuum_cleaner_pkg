@@ -21,9 +21,9 @@ public:
     CoveringAlgorithm(const std::string &node_name_, const std::string &namespace_ = "");
     ~CoveringAlgorithm();
 
-    std::shared_ptr<LaserHandler> lh_node = std::make_shared<LaserHandler>();
-    std::shared_ptr<RobotController> rc_node = std::make_shared<RobotController>();
-    std::shared_ptr<OdomHandler> oh_node = std::make_shared<OdomHandler>();
+    std::shared_ptr<LaserHandler> laser_handler_node = std::make_shared<LaserHandler>();
+    std::shared_ptr<RobotController> robot_controller_node = std::make_shared<RobotController>();
+    std::shared_ptr<OdomHandler> odom_handler_node = std::make_shared<OdomHandler>();
     
     float generateNewAngleGoal() const;
     bool rotateToAngle(const float angle_goal);

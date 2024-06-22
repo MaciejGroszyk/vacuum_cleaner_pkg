@@ -9,7 +9,7 @@
 class RandomWalk : public CoveringAlgorithm
 {
 private:
-    bool collison_handling_;
+    bool collision_handling_;
     float angle_goal_;
 
 public:

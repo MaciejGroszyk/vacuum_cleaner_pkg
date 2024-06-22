@@ -10,6 +10,9 @@ class RobotController : public rclcpp::Node
 private:
     rclcpp::Publisher<geometry_msgs::msg::Twist>::SharedPtr cmd_vel_publisher_;
 
+    const float X_VEL_ = 0.5;
+    const float THETA_VEL_ = 0.1;
+
 public:
     RobotController();
     // RobotController(const std::string & namespace_ = "");
@@ -25,7 +28,9 @@ public:
     };
     void move(const MoveCommands&);
     void move(const float x_val, const float y_val, const float z_val);
-    // void publishCmdVel(const float, const float, const float);
+    
+    float getXVelocity() const;
+    float getThetaVelocity() const;
 };
 
 #endif

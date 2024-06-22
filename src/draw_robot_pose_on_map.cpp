@@ -7,18 +7,6 @@
 #include <fstream>
 #include <nlohmann/json.hpp>
 using json = nlohmann::json;
-// def rotate(points, angle):
-//     ANGLE = np.deg2rad(angle)
-//     c_x, c_y = np.mean(points, axis=0)
-//     return np.array(
-//         [
-//             [
-//                 c_x + np.cos(ANGLE) * (px - c_x) - np.sin(ANGLE) * (py - c_x),
-//                 c_y + np.sin(ANGLE) * (px - c_y) + np.cos(ANGLE) * (py - c_y)
-//             ]
-//             for px, py in points
-//         ]
-//     ).astype(int)
 
 
 class DrawRobotPoseOnMap

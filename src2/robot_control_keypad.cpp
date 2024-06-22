@@ -18,7 +18,7 @@ int main(int argc, char * argv[])
     while(running)
     {
         std::cin.get(ch);
-        // TO DO keyboard handler without etner confirmation
+        // TO DO keyboard handler without enter confirmation
         RobotController::MoveCommands cmd = RobotController::MoveCommands::STOP;
         if (ch== 'w')
         {

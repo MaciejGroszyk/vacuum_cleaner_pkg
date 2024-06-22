@@ -19,5 +19,7 @@ void OdomHandler::odomCallback_(const nav_msgs::msg::Odometry::SharedPtr msg)
     double roll, pitch, yaw;
     m.getRPY(roll, pitch, yaw);
     act_val_yaw = yaw;
+    act_val_x = msg->pose.pose.position.x;
+    act_val_y = msg->pose.pose.position.y;
 }
 

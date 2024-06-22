@@ -16,6 +16,8 @@ private:
 public:
     OdomHandler();
     double act_val_yaw;
+    double act_val_x;
+    double act_val_y;
 };
 
 

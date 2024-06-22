@@ -2,6 +2,8 @@
 #define COVERINGALGORITHM_H
 
 #include <random>
+#include <cmath> 
+
 #include "../robot_handler/RobotController.h"
 #include "../robot_handler/OdomHandler.h"
 #include "../robot_handler/LaserHandler.h"
@@ -12,12 +14,14 @@
 class CoveringAlgorithm : public rclcpp::Node
 {
 private:
-    const float K_ANGULAR = 1.5;
-    float getRandomValueFromRange(const float min_value, const float max_value) const;
+    float getRandomValueFromRange_(const float min_value, const float max_value) const;
+    float calcDistance_(const float x_prev, const float y_prev, const float x, const float y) const;
 
     rclcpp::TimerBase::SharedPtr timer_algorithm_;
 
 public:
+    float K_ANGULAR = 1.5;
+    float K_LINEAR = 1.5;
     CoveringAlgorithm(const std::string &node_name_, const std::string &namespace_ = "");
     ~CoveringAlgorithm();
 
@@ -27,6 +31,7 @@ public:
     
     float generateNewAngleGoal() const;
     bool rotateToAngle(const float angle_goal);
+    bool moveDistance(const float x_pose, const float y_pose, const float distance);
 
 
     virtual void algorithm() = 0;

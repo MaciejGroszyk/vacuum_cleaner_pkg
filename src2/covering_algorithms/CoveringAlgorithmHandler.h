@@ -3,6 +3,7 @@
 
 #include "rclcpp/rclcpp.hpp"
 #include "RandomWalk.h"
+#include "SnakingWalk.h"
 #include "SpiralWalk.h"
 
 class CoveringAlgorithmHandler
@@ -17,7 +18,7 @@ public:
 
     void startRandomWalk();
     void startSpiralWalk();
-    void startSnackingWalk();
+    void startSnakingWalk();
 
 };
 

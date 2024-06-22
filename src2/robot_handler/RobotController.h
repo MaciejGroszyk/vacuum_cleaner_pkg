@@ -10,10 +10,11 @@ class RobotController : public rclcpp::Node
 private:
     rclcpp::Publisher<geometry_msgs::msg::Twist>::SharedPtr cmd_vel_publisher_;
 
-    const float X_VEL_ = 0.5;
-    const float THETA_VEL_ = 0.1;
 
 public:
+    float X_VEL_ = 0.5;
+    float THETA_VEL_ = 0.1;
+    
     RobotController();
     // RobotController(const std::string & namespace_ = "");
 

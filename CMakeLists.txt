@@ -69,6 +69,8 @@ add_executable(main_node
   src2/covering_algorithms/CoveringAlgorithmHandler.h
   src2/covering_algorithms/RandomWalk.cpp
   src2/covering_algorithms/RandomWalk.h
+  src2/covering_algorithms/SnakingWalk.cpp
+  src2/covering_algorithms/SnakingWalk.h
   src2/covering_algorithms/SpiralWalk.cpp
   src2/covering_algorithms/SpiralWalk.h
   )

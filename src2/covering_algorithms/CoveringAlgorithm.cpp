@@ -17,8 +17,8 @@ CoveringAlgorithm::~CoveringAlgorithm()
 
 bool CoveringAlgorithm::rotateToAngle(const float angle_goal)
 {
-    float z_vel = (angle_goal - odom_handler_node -> act_val_yaw) * K_ANGULAR;
-    if (abs(z_vel) < 0.3)
+    float z_vel = std::min((angle_goal - odom_handler_node -> act_val_yaw) * K_ANGULAR, 0.25);
+    if (abs(z_vel) < 0.05)
     {
         robot_controller_node -> move(robot_controller_node -> MoveCommands::STOP);
         return true;
@@ -30,7 +30,31 @@ bool CoveringAlgorithm::rotateToAngle(const float angle_goal)
     }
 }
 
-float CoveringAlgorithm::getRandomValueFromRange(const float min_value, const float max_value) const
+bool CoveringAlgorithm::moveDistance(const float x_pose, const float y_pose, const float distance)
+{
+    const float x = odom_handler_node -> act_val_x;
+    const float y = odom_handler_node -> act_val_y;
+    const float distance_done = calcDistance_(x_pose, y_pose, x, y);
+    if (distance_done > distance - 0.1)
+    {
+        robot_controller_node -> move(robot_controller_node -> MoveCommands::STOP);
+        return true;
+    }
+    else
+    {
+        const float X_VEL = std::min(robot_controller_node ->getXVelocity(), (abs(distance_done - distance))*K_LINEAR);
+        robot_controller_node -> move(X_VEL, 0.0, 0.0);
+        return false;
+    }
+}
+
+
+float CoveringAlgorithm::calcDistance_(const float x_prev, const float y_prev, const float x, const float y) const
+{
+    return sqrt(pow(x - x_prev, 2) + pow(y -y_prev, 2));
+}
+
+float CoveringAlgorithm::getRandomValueFromRange_(const float min_value, const float max_value) const
 {
     std::random_device rd;
     std::mt19937 mt(rd());
@@ -40,7 +64,7 @@ float CoveringAlgorithm::getRandomValueFromRange(const float min_value, const fl
 
 float CoveringAlgorithm::generateNewAngleGoal() const
 {
-    return getRandomValueFromRange(-3.14, 3.14);
+    return getRandomValueFromRange_(-3.14, 3.14);
 }
 
 

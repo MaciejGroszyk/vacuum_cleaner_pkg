@@ -33,7 +33,8 @@ void CoveringAlgorithmHandler::startSpiralWalk()
     start_(spiral_walk_node);
 }
 
-void CoveringAlgorithmHandler::startSnackingWalk()
+void CoveringAlgorithmHandler::startSnakingWalk()
 {
-
+    auto spiral_walk_node = std::make_shared<SnakingWalk>();
+    start_(spiral_walk_node);
 }

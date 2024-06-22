@@ -8,7 +8,7 @@ SpiralWalk::SpiralWalk() : CoveringAlgorithm("spiral_walk")
 
 SpiralWalk::~SpiralWalk()
 {
-    
+
 }
 
 void SpiralWalk::algorithm()

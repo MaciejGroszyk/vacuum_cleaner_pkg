@@ -3,6 +3,7 @@
 
 #include "rclcpp/rclcpp.hpp"
 #include "RandomWalk.h"
+#include "SpiralWalk.h"
 
 class CoveringAlgorithmHandler
 {
@@ -13,6 +14,7 @@ public:
     ~CoveringAlgorithmHandler();
     rclcpp::executors::MultiThreadedExecutor executor;
     void startRandomWalk();
+    void startSpiralWalk();
 
 };
 

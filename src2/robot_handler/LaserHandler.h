@@ -14,8 +14,8 @@ class LaserHandler : public rclcpp::Node
 private:
     const uint SCALE = 12;
     const float COLLISION_DISTANCE_FRONT = 0.55;
-    const float COLLISION_DISTANCE = 0.2;
-    rclcpp::Subscription<sensor_msgs::msg::LaserScan>::SharedPtr scaner_subscription_;
+    const float COLLISION_DISTANCE = 0.27;
+    rclcpp::Subscription<sensor_msgs::msg::LaserScan>::SharedPtr scanner_subscription_;
     rclcpp::Publisher<vacuum_cleaner_pkg::msg::Bumper>::SharedPtr bumper_publisher_;
 
     bool front_detected_;

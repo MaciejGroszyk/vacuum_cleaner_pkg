@@ -5,7 +5,7 @@
 #include "tf2/LinearMath/Matrix3x3.h"
 #include "rclcpp/rclcpp.hpp"
 #include <nav_msgs/msg/odometry.hpp>
-
+#include "rcutils/logging_macros.h"
 class OdomHandler : public rclcpp::Node
 {
 

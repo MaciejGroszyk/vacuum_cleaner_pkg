@@ -3,7 +3,7 @@
 LaserHandler::LaserHandler()
     : Node("bumber_sensor_sim")
     {
-    scaner_subscription_ = this->create_subscription<sensor_msgs::msg::LaserScan>("/scan", 20, std::bind(&LaserHandler::laser_callback, this, _1));
+    scanner_subscription_ = this->create_subscription<sensor_msgs::msg::LaserScan>("/scan", 30, std::bind(&LaserHandler::laser_callback, this, _1));
 
     bumper_publisher_ = this->create_publisher<vacuum_cleaner_pkg::msg::Bumper>("/bumper_sensor", 10);
 
@@ -11,7 +11,7 @@ LaserHandler::LaserHandler()
 
 void LaserHandler::laser_callback(const sensor_msgs::msg::LaserScan::SharedPtr msg_in)
 {
-    RCLCPP_INFO(this->get_logger(), "lh_node");
+    // RCLCPP_INFO(this->get_logger(), "laser_handler_node");
     const float min_front_laser_range = get_min_front_laser_range(msg_in);
     const float min_left_laser_range = get_min_left_laser_range(msg_in);
     const float min_right_laser_range = get_min_right_laser_range(msg_in);

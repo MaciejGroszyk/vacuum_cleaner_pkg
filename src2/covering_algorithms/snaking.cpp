@@ -5,7 +5,7 @@
 class Snaking : public CoveringAlgorithm
 {
 public:
-    Snaking() : CoveringAlgorithm()
+    Snaking() : CoveringAlgorithm("snaking_walk")
     {
     }
     // ~Snaking() : ~CoveringAlgorithm()
@@ -13,6 +13,10 @@ public:
     // }
 
     void start()
+    {
+
+    }
+    void algorithm()
     {
 
     }

@@ -1,20 +1,20 @@
-#ifndef ROBOTCONTROLER_H
-#define ROBOTCONTROLER_H
+#ifndef ROBOTCONTROLLER_H
+#define ROBOTCONTROLLER_H
 
 #include "rclcpp/rclcpp.hpp"
 #include "geometry_msgs/msg/twist.hpp"
 
 
-class RobotControler : public rclcpp::Node
+class RobotController : public rclcpp::Node
 {
 private:
     rclcpp::Publisher<geometry_msgs::msg::Twist>::SharedPtr cmd_vel_publisher_;
 
 public:
-    RobotControler();
-    // RobotControler(const std::string & namespace_ = "");
+    RobotController();
+    // RobotController(const std::string & namespace_ = "");
 
-    ~RobotControler();
+    ~RobotController();
 
     enum MoveCommands
     {

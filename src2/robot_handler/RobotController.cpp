@@ -1,20 +1,20 @@
 
-#include "RobotControler.h"
+#include "RobotController.h"
 
 using std::placeholders::_1;
 
-RobotControler::RobotControler()
+RobotController::RobotController()
     : Node("robot_controler")
 {
     cmd_vel_publisher_ = this->create_publisher<geometry_msgs::msg::Twist>("/cmd_vel", rclcpp::ServicesQoS());
 }
 
-RobotControler::~RobotControler()
+RobotController::~RobotController()
 {
     
 }
 
-void RobotControler::move(const RobotControler::MoveCommands & move_command)
+void RobotController::move(const RobotController::MoveCommands & move_command)
 {
     switch(move_command)
     {
@@ -25,7 +25,7 @@ void RobotControler::move(const RobotControler::MoveCommands & move_command)
     }
 }
 
-void RobotControler::publish_cmd_vel_function(const float x_val, const float y_val, const float z_val)
+void RobotController::publish_cmd_vel_function(const float x_val, const float y_val, const float z_val)
 {
     auto twist_msg = geometry_msgs::msg::Twist();
 
@@ -36,7 +36,7 @@ void RobotControler::publish_cmd_vel_function(const float x_val, const float y_v
     //RCLCPP_INFO(this->get_logger(), "Cmd vel published");
 }
 
-// class RobotControler : public rclcpp::Node
+// class RobotController : public rclcpp::Node
 // {
 
 // private:
@@ -54,7 +54,7 @@ void RobotControler::publish_cmd_vel_function(const float x_val, const float y_v
 //     }
 
 // public:
-//     RobotControler(): Node("robot_controler")
+//     RobotController(): Node("robot_controler")
 //     {
 //         cmd_vel_publisher_ = this->create_publisher<geometry_msgs::msg::Twist>("/cmd_vel", rclcpp::ServicesQoS());
 //     }

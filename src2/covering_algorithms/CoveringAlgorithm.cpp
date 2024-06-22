@@ -21,7 +21,7 @@ CoveringAlgorithm::~CoveringAlgorithm()
 
 }
 
-bool CoveringAlgorithm::rotate_to_angle(const float angle_goal)
+bool CoveringAlgorithm::rotateToAngle(const float angle_goal)
 {
     float z_vel = (angle_goal - oh_node -> act_val_yaw) * K_ANGULAR;
     if (abs(z_vel) < 0.3)
@@ -36,7 +36,7 @@ bool CoveringAlgorithm::rotate_to_angle(const float angle_goal)
     }
 }
 
-float CoveringAlgorithm::get_random_value_from_range(const float min_value, const float max_value) const
+float CoveringAlgorithm::getRandomValueFromRange(const float min_value, const float max_value) const
 {
     std::random_device rd;
     std::mt19937 mt(rd());
@@ -44,9 +44,9 @@ float CoveringAlgorithm::get_random_value_from_range(const float min_value, cons
     return dist(mt);
 }
 
-float CoveringAlgorithm::generate_new_angle_goal() const
+float CoveringAlgorithm::generateNewAngleGoal() const
 {
-    return get_random_value_from_range(-3.14, 3.14);
+    return getRandomValueFromRange(-3.14, 3.14);
 }
 
 

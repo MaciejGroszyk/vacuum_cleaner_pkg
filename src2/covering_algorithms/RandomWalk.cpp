@@ -23,14 +23,14 @@ void RandomWalk::algorithm()
     if (this -> lh_node -> isCollisionFront() && (not collison_handling_))
     {
         // RCLCPP_INFO(this->get_logger(), "new angle");
-        angle_goal_ = this -> generate_new_angle_goal();
+        angle_goal_ = this -> generateNewAngleGoal();
         this -> rc_node -> move(this -> rc_node -> MoveCommands::STOP);
         collison_handling_ = true;
     }
     else if (collison_handling_)
     {
         // RCLCPP_INFO(this->get_logger(), "Collision handling");
-        collison_handling_ = not (this-> rotate_to_angle(angle_goal_));
+        collison_handling_ = not (this-> rotateToAngle(angle_goal_));
     }
     else if ((not (this -> lh_node -> isCollisionFront())) && (not collison_handling_))
     {

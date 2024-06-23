@@ -1,0 +1,37 @@
+#ifndef ROBOTCONTROLLER_H
+#define ROBOTCONTROLLER_H
+
+#include "rclcpp/rclcpp.hpp"
+#include "geometry_msgs/msg/twist.hpp"
+
+
+class RobotController : public rclcpp::Node
+{
+private:
+    rclcpp::Publisher<geometry_msgs::msg::Twist>::SharedPtr cmd_vel_publisher_;
+
+
+public:
+    float X_VEL_ = 0.5;
+    float THETA_VEL_ = 0.1;
+    
+    RobotController();
+    // RobotController(const std::string & namespace_ = "");
+
+    ~RobotController();
+
+    enum MoveCommands
+    {
+        STOP,
+        LEFT,
+        RIGHT,
+        FORWARD
+    };
+    void move(const MoveCommands&);
+    void move(const float x_val, const float y_val, const float z_val);
+    
+    float getXVelocity() const;
+    float getThetaVelocity() const;
+};
+
+#endif
